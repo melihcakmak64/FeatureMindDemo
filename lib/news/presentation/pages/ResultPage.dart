@@ -16,7 +16,6 @@ class ResultPage extends ConsumerWidget {
     final newsState = ref.watch(newsProvider);
     final scrollController = ScrollController();
 
-    // Add listener for pagination
     scrollController.addListener(() {
       if (scrollController.position.pixels ==
           scrollController.position.maxScrollExtent) {
@@ -28,25 +27,35 @@ class ResultPage extends ConsumerWidget {
       appBar: AppBar(title: Text('Results for "$query"')),
       body: newsState.isLoading && newsState.articles.isEmpty
           ? Center(
-              child: Lottie.asset(
-                Constants.LOADING_ANIMATION_PATH,
-              ),
+              child: Lottie.asset(Constants.LOADING_ANIMATION_PATH,
+                  width: 200, height: 200, fit: BoxFit.fill),
             )
-          : AnimationList(
-              controller: scrollController,
-              duration: 1500,
-              reBounceDepth: 30,
-              children: [
-                ...newsState.articles.map((article) {
-                  return NewsTile(article: article);
-                }),
-                if (newsState.isLoading)
-                  const Padding(
+          : newsState.error != null
+              ? const Center(
+                  child: Padding(
                     padding: EdgeInsets.all(16.0),
-                    child: Center(child: CircularProgressIndicator()),
+                    child: Text(
+                      "There is an error,please check your internet connection and try again",
+                      style: TextStyle(color: Colors.red, fontSize: 18),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
-              ],
-            ),
+                )
+              : AnimationList(
+                  controller: scrollController,
+                  duration: 1500,
+                  reBounceDepth: 30,
+                  children: [
+                    ...newsState.articles.map((article) {
+                      return NewsTile(article: article);
+                    }),
+                    if (newsState.isLoading)
+                      const Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Center(child: CircularProgressIndicator()),
+                      ),
+                  ],
+                ),
     );
   }
 }

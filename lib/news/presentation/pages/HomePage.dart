@@ -11,11 +11,10 @@ class HomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final newsState = ref.watch(newsProvider);
     final searchHistory = ref.watch(searchHistoryProvider);
 
     return Scaffold(
-      appBar: AppBar(title: Text(Constants.HOME_APPBAR_TITLE)),
+      appBar: AppBar(title: const Text(Constants.HOME_APPBAR_TITLE)),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -23,9 +22,9 @@ class HomePage extends ConsumerWidget {
             children: [
               TextField(
                 controller: _controller,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: Constants.HOME_SEARCH_HINT,
-                  border: const OutlineInputBorder(),
+                  border: OutlineInputBorder(),
                 ),
               ),
               const SizedBox(height: 10),
@@ -46,9 +45,8 @@ class HomePage extends ConsumerWidget {
                     showMessage(context, 'Please enter a search term');
                   }
                 },
-                child: Text(Constants.HOME_SEARCH_BUTTON),
+                child: const Text(Constants.HOME_SEARCH_BUTTON),
               ),
-              if (newsState.error != null) Text('Error: ${newsState.error}'),
               if (searchHistory.isNotEmpty) ...[
                 const SizedBox(height: 20),
                 RecentSearchesWidget(
