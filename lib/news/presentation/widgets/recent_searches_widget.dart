@@ -1,18 +1,16 @@
-import 'package:feature_mind_demo/controller/newsProvider.dart';
-import 'package:feature_mind_demo/controller/searchHistoryProvider.dart';
-import 'package:feature_mind_demo/view/ResultPage.dart';
+import 'package:feature_mind_demo/news/presentation/providers/newsProvider.dart';
+import 'package:feature_mind_demo/news/presentation/providers/searchHistoryProvider.dart';
+import 'package:feature_mind_demo/news/presentation/pages/ResultPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class RecentSearchesWidget extends ConsumerWidget {
-  const RecentSearchesWidget({
-    Key? key,
-  }) : super(key: key);
+  final List<String> searchHistory;
+  const RecentSearchesWidget({Key? key, required this.searchHistory})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final searchHistory = ref.watch(searchHistoryProvider);
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

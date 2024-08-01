@@ -1,8 +1,9 @@
-import 'package:feature_mind_demo/view/HomePage.dart';
+import 'package:feature_mind_demo/news/presentation/pages/HomePage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const ProviderScope(child: MyApp()));
 }
 

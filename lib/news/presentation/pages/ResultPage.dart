@@ -1,7 +1,6 @@
-import 'package:feature_mind_demo/constants/Constants.dart';
-import 'package:feature_mind_demo/controller/newsProvider.dart';
-import 'package:feature_mind_demo/model/NewsArticle.dart';
-import 'package:feature_mind_demo/view/widgets/news_tile.dart';
+import 'package:feature_mind_demo/core/constants/Constants.dart';
+import 'package:feature_mind_demo/news/presentation/providers/newsProvider.dart';
+import 'package:feature_mind_demo/news/presentation/widgets/news_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lottie/lottie.dart';

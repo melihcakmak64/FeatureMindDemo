@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:feature_mind_demo/constants/Constants.dart';
-import 'package:feature_mind_demo/model/NewsArticle.dart';
-import 'package:flutter/foundation.dart';
+import 'package:feature_mind_demo/core/constants/Constants.dart';
+import 'package:feature_mind_demo/news/domain/entity/NewsEntity.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
