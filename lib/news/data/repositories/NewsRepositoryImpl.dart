@@ -10,23 +10,23 @@ class NewsRepositoryImpl implements NewsRepository {
   NewsRepositoryImpl(this._apiService, this._localStorageService);
 
   @override
-  Future<List<NewsArticleModel>> fetchNews(String query) async {
-    // Önbelleği kontrol et
+  Future<List<NewsArticleModel>> fetchNews(String query, int page) async {
+    // Check cache
     List<NewsArticleModel> cachedArticles =
-        await _localStorageService.getCachedNews(query);
-    int? cachedTime = await _localStorageService.getCachedTime(query);
+        await _localStorageService.getCachedNews(query, page);
+    int? cachedTime = await _localStorageService.getCachedTime(query, page);
 
-    // Önbellek varsa ve 5 dakika geçmemişse, önbellekten döndür
+    // Return cached articles if available and not expired
     if (cachedArticles.isNotEmpty &&
         cachedTime != null &&
         DateTime.now().millisecondsSinceEpoch - cachedTime < 300000) {
       return cachedArticles;
     }
 
-    // API'den veriyi çek ve önbelleğe al
+    // Fetch from API
     List<NewsArticleModel> newsArticles =
-        await _apiService.fetchNewsFromApi(query);
-    await _localStorageService.cacheNews(query, newsArticles);
+        await _apiService.fetchNewsFromApi(query, page);
+    await _localStorageService.cacheNews(query, page, newsArticles);
 
     return newsArticles;
   }

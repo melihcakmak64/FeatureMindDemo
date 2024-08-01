@@ -16,11 +16,13 @@ class ApiService {
   }
 
   ApiService._();
-  Future<List<NewsArticleModel>> fetchNewsFromApi(String query) async {
+  Future<List<NewsArticleModel>> fetchNewsFromApi(
+      String query, int page) async {
     final response = await _dio.get('$_baseUrl/search', queryParameters: {
       'q': query,
       'api-key': _apiKey,
       'page-size': 10,
+      'page': page,
       'show-fields': 'thumbnail,headline,trailText',
     });
 

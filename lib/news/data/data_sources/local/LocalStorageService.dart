@@ -14,16 +14,18 @@ class LocalStorageService {
 
   LocalStorageService._();
 
-  Future<void> cacheNews(String query, List<NewsArticleModel> articles) async {
+  Future<void> cacheNews(
+      String query, int page, List<NewsArticleModel> articles) async {
     List<String> articlesJson =
         articles.map((article) => jsonEncode(article.toJson())).toList();
-    await _prefs!.setStringList('cachedNews_$query', articlesJson);
-    await _prefs!
-        .setInt('cachedTime_$query', DateTime.now().millisecondsSinceEpoch);
+    await _prefs!.setStringList('cachedNews_$query$page', articlesJson);
+    await _prefs!.setInt(
+        'cachedTime_$query$page', DateTime.now().millisecondsSinceEpoch);
   }
 
-  Future<List<NewsArticleModel>> getCachedNews(String query) async {
-    List<String>? articlesJson = _prefs!.getStringList('cachedNews_$query');
+  Future<List<NewsArticleModel>> getCachedNews(String query, int page) async {
+    List<String>? articlesJson =
+        _prefs!.getStringList('cachedNews_$query$page');
     if (articlesJson != null) {
       return articlesJson
           .map((articleJson) =>
@@ -34,8 +36,8 @@ class LocalStorageService {
     }
   }
 
-  Future<int?> getCachedTime(String query) async {
-    return _prefs!.getInt('cachedTime_$query');
+  Future<int?> getCachedTime(String query, int page) async {
+    return _prefs!.getInt('cachedTime_$query$page');
   }
 
   Future<List<String>> getSearchHistory() async {

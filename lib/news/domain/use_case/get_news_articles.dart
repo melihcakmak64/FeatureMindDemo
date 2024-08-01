@@ -7,7 +7,7 @@ class GetNewsArticles {
 
   GetNewsArticles(this.repository);
 
-  Future<List<NewsArticle>> execute(String query) async {
-    return await repository.fetchNews(query);
+  Future<List<NewsArticle>> execute(String query, int page) async {
+    return await repository.fetchNews(query, page);
   }
 }

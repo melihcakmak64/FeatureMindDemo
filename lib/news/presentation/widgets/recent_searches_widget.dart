@@ -1,5 +1,4 @@
 import 'package:feature_mind_demo/news/presentation/providers/newsProvider.dart';
-import 'package:feature_mind_demo/news/presentation/providers/searchHistoryProvider.dart';
 import 'package:feature_mind_demo/news/presentation/pages/ResultPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

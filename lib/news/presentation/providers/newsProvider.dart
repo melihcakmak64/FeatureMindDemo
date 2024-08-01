@@ -19,17 +19,41 @@ class NewsState {
 
 class NewsNotifier extends StateNotifier<NewsState> {
   final GetNewsArticles _getNewsArticles;
+  int _currentPage = 1;
+  bool _hasMore = true;
 
   NewsNotifier(this._getNewsArticles)
       : super(NewsState(articles: [], isLoading: false));
 
-  Future<void> fetchNews(String query) async {
+  Future<void> fetchNews(String query, {int page = 1}) async {
+    if (page == 1) resetPagination(); // Reset pagination for a new search
+
+    if (!_hasMore) return; // Stop fetching if no more data is available
+
     try {
       state = NewsState(articles: state.articles, isLoading: true);
-      List<NewsArticle> articles = await _getNewsArticles.execute(query);
-      state = NewsState(articles: articles, isLoading: false);
+      List<NewsArticle> articles = await _getNewsArticles.execute(query, page);
+
+      if (articles.isEmpty) {
+        _hasMore = false; // No more data to fetch
+      } else {
+        state = NewsState(
+            articles: [...state.articles, ...articles], isLoading: false);
+        _currentPage = page;
+      }
     } catch (e) {
-      state = NewsState(articles: [], isLoading: false, error: e.toString());
+      state = NewsState(
+          articles: state.articles, isLoading: false, error: e.toString());
     }
+  }
+
+  void loadMore(String query) {
+    fetchNews(query, page: _currentPage + 1);
+  }
+
+  void resetPagination() {
+    _currentPage = 1;
+    _hasMore = true;
+    state = NewsState(articles: [], isLoading: false);
   }
 }

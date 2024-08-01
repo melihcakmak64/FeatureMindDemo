@@ -14,23 +14,38 @@ class ResultPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final newsState = ref.watch(newsProvider);
+    final scrollController = ScrollController();
+
+    // Add listener for pagination
+    scrollController.addListener(() {
+      if (scrollController.position.pixels ==
+          scrollController.position.maxScrollExtent) {
+        ref.read(newsProvider.notifier).loadMore(query);
+      }
+    });
 
     return Scaffold(
       appBar: AppBar(title: Text('Results for "$query"')),
-      body: newsState.isLoading
+      body: newsState.isLoading && newsState.articles.isEmpty
           ? Center(
               child: Lottie.asset(
                 Constants.LOADING_ANIMATION_PATH,
               ),
             )
-          : Center(
-              child: AnimationList(
-                duration: 1500,
-                reBounceDepth: 30,
-                children: newsState.articles.map((article) {
+          : AnimationList(
+              controller: scrollController,
+              duration: 1500,
+              reBounceDepth: 30,
+              children: [
+                ...newsState.articles.map((article) {
                   return NewsTile(article: article);
-                }).toList(),
-              ),
+                }),
+                if (newsState.isLoading)
+                  const Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Center(child: CircularProgressIndicator()),
+                  ),
+              ],
             ),
     );
   }
