@@ -1,20 +1,35 @@
-// data/services/local_storage_service.dart
 import 'dart:convert';
-
 import 'package:feature_mind_demo/model/NewsArticle.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalStorageService {
-  Future<void> cacheNews(List<NewsArticle> articles) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> articlesJson =
-        articles.map((article) => jsonEncode(article.toJson())).toList();
-    await prefs.setStringList('cachedNews', articlesJson);
+  static final LocalStorageService _instance = LocalStorageService._internal();
+  late final SharedPreferences _prefs;
+
+  // Private constructor
+  LocalStorageService._internal() {
+    _init();
   }
 
-  Future<List<NewsArticle>> getCachedNews() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String>? articlesJson = prefs.getStringList('cachedNews');
+  // Factory constructor
+  factory LocalStorageService() {
+    return _instance;
+  }
+
+  Future<void> _init() async {
+    _prefs = await SharedPreferences.getInstance();
+  }
+
+  Future<void> cacheNews(String query, List<NewsArticle> articles) async {
+    List<String> articlesJson =
+        articles.map((article) => jsonEncode(article.toJson())).toList();
+    await _prefs.setStringList('cachedNews_$query', articlesJson);
+    await _prefs.setInt('cachedTime_$query',
+        DateTime.now().millisecondsSinceEpoch); // Zaman damgası
+  }
+
+  Future<List<NewsArticle>> getCachedNews(String query) async {
+    List<String>? articlesJson = _prefs.getStringList('cachedNews_$query');
     if (articlesJson != null) {
       return articlesJson
           .map((articleJson) => NewsArticle.fromJson(jsonDecode(articleJson)))
@@ -24,17 +39,19 @@ class LocalStorageService {
     }
   }
 
+  Future<int?> getCachedTime(String query) async {
+    return _prefs.getInt('cachedTime_$query'); // Zaman damgasını getir
+  }
+
   Future<void> saveSearchHistory(String query) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String>? searchHistory = prefs.getStringList('searchHistory') ?? [];
+    List<String>? searchHistory = _prefs.getStringList('searchHistory') ?? [];
     if (!searchHistory.contains(query)) {
       searchHistory.add(query);
-      await prefs.setStringList('searchHistory', searchHistory);
+      await _prefs.setStringList('searchHistory', searchHistory);
     }
   }
 
   Future<List<String>> getSearchHistory() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getStringList('searchHistory') ?? [];
+    return _prefs.getStringList('searchHistory') ?? [];
   }
 }

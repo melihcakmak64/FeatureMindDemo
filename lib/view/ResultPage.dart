@@ -1,14 +1,14 @@
-// presentation/screens/results_screen.dart
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:feature_mind_demo/constants/Constants.dart';
 import 'package:feature_mind_demo/controller/newsProvider.dart';
 import 'package:feature_mind_demo/model/NewsArticle.dart';
+import 'package:feature_mind_demo/view/widgets/news_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lottie/lottie.dart';
+import 'package:animation_list/animation_list.dart';
 
 class ResultPage extends ConsumerWidget {
   final String query;
-  final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
 
   ResultPage({required this.query});
 
@@ -21,24 +21,17 @@ class ResultPage extends ConsumerWidget {
       body: newsState.isLoading
           ? Center(
               child: Lottie.asset(
-              "assets/loading.json",
-            ))
-          : ListView.builder(
-              itemCount: newsState.articles.length,
-              itemBuilder: (context, index) {
-                NewsArticle article = newsState.articles[index];
-                return ListTile(
-                  leading: CachedNetworkImage(
-                    width: 100,
-                    imageUrl: article.thumbnail,
-                    placeholder: (context, url) =>
-                        Lottie.asset("assets/loading.json"),
-                    errorWidget: (context, url, error) => Icon(Icons.error),
-                  ),
-                  title: Text(article.headline),
-                  subtitle: Text(article.trailText),
-                );
-              },
+                Constants.LOADING_ANIMATION_PATH,
+              ),
+            )
+          : Center(
+              child: AnimationList(
+                duration: 1500,
+                reBounceDepth: 30,
+                children: newsState.articles.map((article) {
+                  return NewsTile(article: article);
+                }).toList(),
+              ),
             ),
     );
   }
